@@ -15,4 +15,11 @@ import javax.faces.context.FacesContext;
  * @author jpmgo
  */
 public class WebComunication {
+
+    public static String getDataFromParams(String key) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = context.getExternalContext();
+        String taskId = externalContext.getRequestParameterMap().get(key);
+        return taskId;
+    }
 }
