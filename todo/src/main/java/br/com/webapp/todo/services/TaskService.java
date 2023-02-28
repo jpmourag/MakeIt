@@ -82,7 +82,7 @@ public class TaskService implements Serializable {
         }
         return tasks;
     }
-
+    
     private List<FolderName> getFoldersNames() {
         List<FolderName> res = new ArrayList<>();
         var json = new ServerFolderConnection().getFoldersNames();
@@ -96,6 +96,10 @@ public class TaskService implements Serializable {
             res = foldersNameResponse.getData();
         }
         return res;
+    }
+    
+    public List<FolderName> getFoldersToSelect() {
+        return getFoldersNames();
     }
 
     public void createTask() {
