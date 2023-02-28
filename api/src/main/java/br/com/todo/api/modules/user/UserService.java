@@ -90,4 +90,15 @@ public class UserService {
                 .message("User deleted")
                 .build();
     }
+
+    @Transactional
+    public ResponseBaseDto updateUser(UpdateUserDto user, String token) throws UserException {
+        var email = getEmailFromToken(token);
+        System.out.println(user + " " + token + " " + email);
+        userRepository.saveUserByEmail(email, user.getName());
+        return ResponseBaseDto.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("User updated")
+                .build();
+    }
 }
