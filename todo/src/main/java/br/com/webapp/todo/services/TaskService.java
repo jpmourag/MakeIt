@@ -50,4 +50,36 @@ public class TaskService implements Serializable {
     final private ServerTaskConnection serverTaskConnection = new ServerTaskConnection();
     final private Gson gson = new Gson();
     final private PersistentDataHandler persistentDataHandler = new PersistentDataHandler();
+
+    public List<Task> getTasks(int offset, int pageSize, Map<String, String> params) {
+        var folderId = params.get("folderId");
+        var filter = params.get("filter");
+        var search = params.get("search");
+
+        if (search != null && !search.isBlank() && !search.isEmpty()) {
+            return searchTasks(offset, pageSize, search);
+        }
+
+        List<Task> tasks = new ArrayList<>();
+        String json = null;
+        if (folderId == null || folderId.isBlank() || folderId.isEmpty() || folderId.equals("none")) {
+            json = serverTaskConnection.getAllTasksPagination(offset, pageSize, filter);
+        } else {
+            json = serverTaskConnection.getTasksPaginationByFolderId(offset, pageSize, filter, folderId);
+        }
+        if (json == null) {
+            return tasks;
+        }
+
+        var tasksListResponseType = new TypeToken<ResponseBaseDto<PaginationBaseDto<List<Task>>>>() {
+        }.getType();
+
+        ResponseBaseDto<PaginationBaseDto<List<Task>>> tasksListResponse = gson.fromJson(json, tasksListResponseType);
+
+        if (tasksListResponse.getStatusCode() == 200) {
+            total = tasksListResponse.getData().getTotal();
+            tasks = tasksListResponse.getData().getData();
+        }
+        return tasks;
+    }
 }
