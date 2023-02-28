@@ -1,0 +1,31 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 18/02/2023, 20:23:11
+    Author     : jpmgo
+*/
+html {
+    background-image: url("#{resource['imgs/bg.png']}");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+.loginInput, .formGrid{
+    width: 100%;
+    background-color: white;
+    margin-bottom: 10px
+}
+
+.form{
+    max-width: 300px;
+    height: 100%;
+    align-self: center;
+}
+
+.button{
+    width: 100%;
+}

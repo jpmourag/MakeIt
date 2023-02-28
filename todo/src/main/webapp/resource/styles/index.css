@@ -1,0 +1,48 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 19/02/2023, 05:12:12
+    Author     : jpmgo
+*/
+
+* {
+    margin: 0;
+    padding: 0;
+    outline: none;
+    border: none;
+    box-sizing: border-box;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+}
+
+.overflow-text{
+    text-overflow: ellipsis;
+    max-width: 260px;
+    overflow: hidden;
+}
+
+.custom-scrolltop.ui-scrolltop {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 4px;
+    outline: 0 none;
+    background-color: var(--primary-color);
+}
+.custom-scrolltop.ui-scrolltop:hover {
+    background-color: var(--primary-color);
+}
+
+.custom-scrolltop.ui-scrolltop .ui-scrolltop-icon {
+    font-size: 1rem;
+    color: var(--primary-color-text);
+}
