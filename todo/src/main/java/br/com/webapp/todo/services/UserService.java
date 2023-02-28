@@ -152,4 +152,33 @@ public class UserService implements Serializable {
         }
 
     }
+
+    public void updateUser() {
+        Map<String, Object> body = new HashMap<>();
+        body.put("name", name);
+        var json = serverUserConnection.updateUser(body);
+        if (json == null) {
+            ExtraForView.triggerErrorMessage("Não atualizar a conta");
+            return;
+        }
+        ResponseBaseDto response = gson.fromJson(json, ResponseBaseDto.class);
+        if (response.getStatusCode() == 200) {
+            ExtraForView.triggerInfoMessage("Conta Atualiada");
+            return;
+        }
+        ExtraForView.triggerWarnMessage("Não foi possível atualizar a conta");
+    }
+
+    public void deleteUser() {
+        var json = serverUserConnection.deleteUser();
+        if (json == null) {
+            ExtraForView.triggerErrorMessage("Não foi possível apagar a conta");
+            return;
+        }
+        ResponseBaseDto response = gson.fromJson(json, ResponseBaseDto.class);
+        if (response.getStatusCode() == 200) {
+            logout();
+        }
+        ExtraForView.triggerErrorMessage("Não foi possível apagar a conta");
+    }
 }
