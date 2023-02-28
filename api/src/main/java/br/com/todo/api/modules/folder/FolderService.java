@@ -27,6 +27,22 @@ public class FolderService {
     @Autowired
     private UserService userService;
 
+
+    public ResponseBaseDto getAllFoldersTitle(String token) {
+        var folder = this.getAllFolders(token)
+                .stream().map(f -> {
+                    return FolderTitleDto.builder()
+                            .id(f.getId().toString())
+                            .title(f.getTitle())
+                            .build();
+                });
+        return ResponseBaseDto.builder()
+                .statusCode(HttpStatus.OK.value())
+                .data(folder)
+                .message("Folder gotten")
+                .build();
+    }
+
     public ResponseBaseDto updateFolder(UUID folderId, UpdateFolderDto folderNewData) throws FolderException {
         var folder = folderRepository.findById(folderId).orElse(null);
         if (folder != null) {
