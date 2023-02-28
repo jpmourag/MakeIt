@@ -135,4 +135,21 @@ public class UserService implements Serializable {
         persistentDataHandler.remove("token");
         WebComunication.redirect("index");
     }
+
+    private void getUserData() {
+        var json = serverUserConnection.getUserData();
+        if (json == null) {
+            return;
+        }
+        var userDataResponseType = new TypeToken<ResponseBaseDto<UserData>>() {
+        }.getType();
+
+        ResponseBaseDto<UserData> userDataResponse = gson.fromJson(json, userDataResponseType);
+        if (userDataResponse.getStatusCode() == 200) {
+            var data = userDataResponse.getData();
+            name = data.getName();
+            email = data.getEmail();
+        }
+
+    }
 }
