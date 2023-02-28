@@ -22,4 +22,17 @@ public class WebComunication {
         String taskId = externalContext.getRequestParameterMap().get(key);
         return taskId;
     }
+
+    public static void redirectWithParameters(String pageName, Map<String, String> params) {
+        var urlParams = WebComunication.getQueryString(params);
+        try {
+            var context = FacesContext.getCurrentInstance();
+            ExternalContext externalContext = context.getExternalContext();
+            externalContext.redirect(
+                    externalContext.getRequestContextPath() + "/" + pageName + ".xhtml" + urlParams);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+    }
 }
