@@ -58,4 +58,27 @@ public class FolderService implements Serializable {
         }
         return folders;
     }
+
+    public Folder getFolderById(String folderId) {
+        if (folderId.isBlank()) {
+            ExtraForView.triggerErrorMessage("Um error ocorreu.");
+            return null;
+        }
+
+        var json = serverFolderConnection.getFolderById(folderId);
+        if (json == null) {
+            ExtraForView.triggerErrorMessage("Um error ocorreu.");
+            return null;
+        }
+
+        var folderResponseType = new TypeToken<ResponseBaseDto<Folder>>() {
+        }.getType();
+        ResponseBaseDto<Folder> folderResponse = gson.fromJson(json, folderResponseType);
+
+        if (folderResponse.getStatusCode() == 200) {
+            return folderResponse.getData();
+        }
+        ExtraForView.triggerErrorMessage("Um error ocorreu.");
+        return null;
+    }
 }
