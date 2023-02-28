@@ -83,6 +83,19 @@ public class TaskService {
                 .message("Task found")
                 .build();
     }
+
+    public ResponseBaseDto searchTask(String title, String token, int offset, int pageSize) {
+        var page = PageRequest.of(offset, pageSize);
+        var foundTasks = taskRepository.findByKeyword(title, userService.getEmailFromToken(token), page);
+        var total = taskRepository.getAmountByKeyword(title, userService.getEmailFromToken(token));
+
+        return ResponseBaseDto.builder()
+                .statusCode(HttpStatus.OK.value())
+                .data(PaginationBaseResponseDto.builder().data(foundTasks).total(total).build())
+                .message("Processed")
+                .build();
+    }
+
     public ResponseBaseDto deleteTask(UUID taskId) {
         taskRepository.deleteById(taskId);
         return ResponseBaseDto.builder()
