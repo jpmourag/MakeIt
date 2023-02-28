@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="WEB-INF/templates/Main.xhtml"
+                xmlns:cc="http://xmlns.jcp.org/jsf/composite/components">
+
+    <ui:define name="body">
+        <p:growl id="message" showDetail="true"/>
+        
+        <p class="folder-title base-box">#{taskService.currentFolder.title.toUpperCase()}</p>
+
+        <p:dataGrid var="task" 
+                    value="#{taskLV.lazyModel}" 
+                    columns="2" 
+                    rows="6"
+                    lazy="true"
+                    paginator="true"
+                    paginatorPosition="bottom"
+                    id="gridData_tasks">
+
+            <p:column>
+
+                <p:card style="margin-bottom: 2em" id="gridData_tasks_card" >
+                    <!--estrutura do card-->
+                    <f:facet name="header">
+                        <div style="width: 100%;
+                             height: 20px;
+                             background-color: #{task.isCompleted ? '#619434': '#c02929'}" />
+                    </f:facet>
+
+                    <f:facet name="title">
+                        <div class="title-container">
+                            <p class="overflow-text" >#{task.title}</p>
+                            <i class="pi #{task.isCompleted ? 'pi-check-circle ': 'pi-times-circle'}" 
+                               style="font-size: 2rem;
+                               color: #{task.isCompleted ? '#619434': '#c02929'}"/>
+                        </div>
+                    </f:facet>
+
+                    <f:facet name="subtitle" id="task-card-subtitle">
+                        Pasta: <p:commandLink class="overflow-text folder-link" 
+                                              value="#{task.folderName}"
+                                              action="#{taskLV.redirectToFolderPageByFolderId(
+                                                        task.folderId, task.folderName)}"/>
+                        <p>Status: #{task.isCompleted ? 
+                                     'Atividade concluída': 
+                                     'Atividade não finalizada'}
+                        </p>
+                    </f:facet>
+
+                    <p class="overflow-text folder-desc">#{task.description}</p>
+
+                    <f:facet name="footer">
+                        <div class="card-task-footer-btns">
+                            <p:commandButton icon="pi pi-external-link" 
+                                             value="Mostrar" 
+                                             onclick="PF('show#{task.id}').show()"/>
+                            <p:commandButton icon="pi pi-pencil" 
+                                             value="Editar" 
+                                             styleClass="ui-button-secondary" 
+                                             onclick="PF('edit#{task.id}').show()"/>
+                            <p:commandButton icon="pi pi-trash" 
+                                             value="Deletar" 
+                                             styleClass="ui-button-danger" 
+                                             onclick="PF('confirmDelete#{task.id}').show()"/>
+                        </div>
+                    </f:facet>
+
+                </p:card>
+
+                <!--dialogs-->
+                <p:dialog header="#{task.title}" 
+                          widgetVar="show#{task.id}"
+                          minHeight="40"
+                          width="350"
+                          showEffect="fade"
+                          modal="true">
+                    <p class="m-0">#{task.description}</p>
+                </p:dialog>
+
+                <p:confirmDialog header="Excluir Tarefa" 
+                                 message="Deseja excluir a tarefa: #{task.title}?" 
+                                 showEffect="fade" 
+                                 responsive="true" 
+                                 width="350"
+                                 widgetVar="confirmDelete#{task.id}">
+                    <p:growl id="delete_task" showDetail="true" />
+                    <p:commandButton value="Não"
+                                     type="button"
+                                     styleClass="ui-confirmdialog-no ui-button-flat"
+                                     onclick="PF('confirmDelete#{task.id}').hide()"/>
+                    <p:commandButton value="Sim"
+                                     actionListener="#{taskService.deleteTask(task.id)}" 
+                                     styleClass="ui-confirmdialog-yes"
+                                     onclick="PF('confirmDelete#{task.id}').hide()"
+                                     update="delete_task"/>
+                </p:confirmDialog>
+
+                <p:dialog header="Editar" 
+                          widgetVar="edit#{task.id}"
+                          minHeight="40"
+                          width="350"
+                          showEffect="fade"
+                          modal="true" responsive="true">
+                    <h:form class="dialog-form">
+                        <p:growl id="edit_task" showDetail="true"/>
+                        <p:inputText value="#{task.title}" placeholder="#{task.title}"/>
+                        <p:inputTextarea value="#{task.description}" placeholder="#{task.description}"/>
+                        <p:selectBooleanCheckbox value="#{task.isCompleted}" 
+                                                 itemLabel="Marcar como concluído."/>
+                        <p:commandButton value="Atualizar" 
+                                         update="edit_task"
+                                         onclick="PF('edit#{task.id}').hide()"
+                                         actionListener="#{taskService.updateTask(
+                                                           task.id, 
+                                                           task.title, 
+                                                           task.description, 
+                                                           task.isCompleted)}" />
+                    </h:form>
+                </p:dialog>
+
+            </p:column>
+        </p:dataGrid>
+
+    </ui:define>
+</ui:composition>
