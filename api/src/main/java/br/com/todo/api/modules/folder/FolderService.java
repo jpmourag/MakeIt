@@ -27,6 +27,26 @@ public class FolderService {
     @Autowired
     private UserService userService;
 
+
+    public ResponseBaseDto getFolderByIdWithResponse(UUID folderId, String token) throws FolderException {
+        var folder = getFolderById(folderId, token);
+        if (folder == null) throw new FolderException("Folder not found");
+        var handledFolder = FolderPaginationDto.builder()
+                .id(folder.getId().toString())
+                .title(folder.getTitle())
+                .allTasks((long) folder.getTasks().size())
+                .allCompletedTasks(folder.getTasks().stream().filter(t -> t.getIsCompleted().equals(true)).count())
+                .allUncompletedTasks(folder.getTasks().stream().filter(t -> t.getIsCompleted().equals(false)).count())
+                .build();
+
+        return ResponseBaseDto.builder()
+                    .statusCode(HttpStatus.OK.value())
+                    .data(handledFolder)
+                    .message("Folder gotten")
+                    .build();
+
+    }
+
     public ResponseBaseDto getFoldersPagination(String token, int offset, int pageSize) {
         var email = userService.getEmailFromToken(token);
         List<FolderPaginationDto> folders = new ArrayList<>();
