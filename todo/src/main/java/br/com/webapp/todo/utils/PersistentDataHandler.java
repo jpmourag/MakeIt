@@ -17,4 +17,15 @@ import javax.servlet.http.HttpServletResponse;
  */
 @ApplicationScoped
 public class PersistentDataHandler {
+
+    public void save(String key, String data) {
+        FacesContext fc = FacesContext.getCurrentInstance();
+        ExternalContext ec = fc.getExternalContext();
+        HttpServletResponse response = (HttpServletResponse) ec.getResponse();
+
+        Cookie cookie = new Cookie(key, data);
+        cookie.setMaxAge(3600);
+        cookie.setPath(ec.getRequestContextPath());
+        response.addCookie(cookie);
+    }
 }
