@@ -114,4 +114,16 @@ public class UserController {
     )  {
         return ResponseEntity.ok(userService.isAuthenticated(token));
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler
+            ({
+                    MethodArgumentNotValidException.class,
+                    MissingServletRequestParameterException.class,
+                    MethodArgumentTypeMismatchException.class
+            })
+    public ResponseEntity<ResponseBaseDto> handleValidationExceptions(Exception ex)
+            throws UnmappedErrorException {
+        return CustomResponseEntityExceptionHandler.handleValidationExceptions(ex);
+    }
 }
