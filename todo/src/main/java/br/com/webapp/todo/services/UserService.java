@@ -73,4 +73,40 @@ public class UserService implements Serializable {
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
     }
+
+    public void register() {
+        if (!isValidRegister()) {
+            return;
+        }
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("name", name);
+        body.put("email", email);
+        body.put("password", password);
+
+        var json = serverUserConnection.register(body);
+        if (json == null) {
+            ExtraForView.triggerWarnMessage("Não foi possível criar a conta");
+            return;
+        }
+
+        var registerResponseType = new TypeToken<ResponseBaseDto>() {
+        }.getType();
+        ResponseBaseDto registerResponse = gson.fromJson(json, registerResponseType);
+
+        if (registerResponse.getStatusCode() == 201) {
+            WebComunication.redirect("index");
+            return;
+        }
+
+        if (registerResponse.getMessage() != null) {
+            var messageToShow = "Não foi possível criar conta";
+            if (registerResponse.getMessage().equals("User already exists")) {
+                messageToShow = "Email já foi utilizado";
+            }
+            ExtraForView.triggerErrorMessage(messageToShow);
+            return;
+        }
+        ExtraForView.triggerErrorMessage("Não foi possível criar conta");
+    }
 }
