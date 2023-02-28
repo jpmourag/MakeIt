@@ -12,4 +12,7 @@ import java.util.UUID;
 public interface IFolderRepository extends JpaRepository<Folder, UUID> {
     @Query("SELECT COUNT(*) FROM FOLDER f WHERE f.user.email = :email")
     Integer getAmountOfAllFolders(String email);
+
+    @Query("SELECT f FROM FOLDER f WHERE f.user.email = :email ORDER BY f.createdAt DESC")
+    List<Folder> findAllByUserEmail(String email, AbstractPageRequest pageable);
 }
