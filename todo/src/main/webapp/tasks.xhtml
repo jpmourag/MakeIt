@@ -11,6 +11,8 @@
     <ui:define name="body">
         <p:growl id="message" showDetail="true"/>
         
+        <cc:taskFilterMenu />
+
         <p class="folder-title base-box">#{taskService.currentFolder.title.toUpperCase()}</p>
 
         <p:dataGrid var="task" 
