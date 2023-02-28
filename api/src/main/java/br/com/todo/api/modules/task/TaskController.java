@@ -55,4 +55,22 @@ public class TaskController {
             throw new UnmappedErrorException(e);
         }
     }
+
+    @GetMapping("/private/find")
+    public ResponseEntity<ResponseBaseDto> search(
+            @RequestHeader("Authorization") String token,
+            @RequestParam("filter") @Valid String filter,
+            @RequestParam("offset") @Valid Integer offset,
+            @RequestParam("pageSize") @Valid Integer pageSize
+    ) throws TaskException, UnmappedErrorException {
+        try {
+            return ResponseEntity.ok(taskService.searchTask(filter, token, offset, pageSize));
+        } catch (CannotCreateTransactionException e) {
+            throw new TaskException("Error finding tasks");
+        } catch (EmptyResultDataAccessException e) {
+            throw new TaskException("Task not found");
+        }  catch (Exception e) {
+            throw new UnmappedErrorException(e);
+        }
+    }
 }
