@@ -59,4 +59,15 @@ public class WebComunication {
 
         return "";
     }
+
+    public static void redirect(String pageName) {
+        var context = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = context.getExternalContext();
+        try {
+            externalContext.redirect(pageName + ".xhtml");
+            context.responseComplete();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
 }
