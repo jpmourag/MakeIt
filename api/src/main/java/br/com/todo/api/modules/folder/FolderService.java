@@ -26,4 +26,9 @@ public class FolderService {
     private IFolderRepository folderRepository;
     @Autowired
     private UserService userService;
+    
+    public Folder getFolderById(UUID folderId, String token) {
+        var email = userService.getEmailFromToken(token);
+        return folderRepository.findFolderByIdAndUserEmail(folderId, email);
+    }
 }
