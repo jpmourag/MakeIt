@@ -84,4 +84,25 @@ public class TaskLazyView implements Serializable {
         WebComunication.redirectWithParameters("tasks", params);
         lazyModel = new LazyTaskDataModel(taskService.getTasks(0, 6, params), taskService.getTotal(), params);
     }
+
+    public void redirectAllTasks(String filter) {
+        Map<String, String> menu = new HashMap<>();
+        menu.put("all", "Todas");
+        menu.put("completed", "Concluídas");
+        menu.put("uncompleted", "Não Concluídas");
+
+        Map<String, String> params = new HashMap<>();
+        params.put("folderId", "none");
+        params.put("filter", filter);
+        params.put("search", "");
+
+        var folder = Folder.builder()
+                .id("none")
+                .title(menu.get(filter))
+                .build();
+        taskService.setCurrentFolder(folder);
+
+        WebComunication.redirectWithParameters("tasks", params);
+        lazyModel = new LazyTaskDataModel(taskService.getTasks(0, 6, params), taskService.getTotal(), params);
+    }
 }
