@@ -75,4 +75,20 @@ public class UserController {
             throw new UnmappedErrorException(e);
         }
     }
+
+    @PutMapping("/private/update")
+    public ResponseEntity<ResponseBaseDto> update(
+            @RequestHeader("Authorization") String token,
+            @RequestBody @Valid UpdateUserDto user
+    ) throws UserException, UnmappedErrorException {
+        try {
+            return ResponseEntity.ok(userService.updateUser(user, token));
+        } catch (UsernameNotFoundException | EmptyResultDataAccessException e ) {
+            throw new UserException("User not found");
+        } catch (EntityException e) {
+            throw new UserException(e.getMessage());
+        } catch (Exception e) {
+            throw new UnmappedErrorException(e);
+        }
+    }
 }
