@@ -29,4 +29,16 @@ public class ServerConnection {
     protected String getAuthToken() {
         return "Bearer " + new PersistentDataHandler().read("token");
     }
+
+    protected String responseToJson(CloseableHttpClient httpclient, ClassicHttpRequest httpData) {
+        try {
+            return httpclient.execute(httpData, (var response) -> {
+                InputStream inputStream = response.getEntity().getContent();
+                String responseJson = new Scanner(inputStream, "UTF-8").useDelimiter("\\A").next();
+                return responseJson;
+            });
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }
