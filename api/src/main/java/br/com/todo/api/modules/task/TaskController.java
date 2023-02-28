@@ -41,4 +41,18 @@ public class TaskController {
             throw new UnmappedErrorException(e);
         }
     }
+
+    @GetMapping("/private/get/{taskId}")
+    public ResponseEntity<ResponseBaseDto> getTaskDataById(
+            @RequestHeader("Authorization") String token,
+            @PathVariable @Valid UUID taskId
+    ) throws TaskException, UnmappedErrorException {
+        try {
+            return ResponseEntity.ok(taskService.getTaskByIdResponse(taskId, token));
+        } catch (CannotCreateTransactionException e) {
+            throw new TaskException("Error getting task");
+        } catch (Exception e) {
+            throw new UnmappedErrorException(e);
+        }
+    }
 }
