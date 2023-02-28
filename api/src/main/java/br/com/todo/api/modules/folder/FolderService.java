@@ -27,6 +27,37 @@ public class FolderService {
     @Autowired
     private UserService userService;
 
+    public ResponseBaseDto getFoldersPagination(String token, int offset, int pageSize) {
+        var email = userService.getEmailFromToken(token);
+        List<FolderPaginationDto> folders = new ArrayList<>();
+        folderRepository.findAllByUserEmail(email, PageRequest.of(offset, pageSize))
+                .forEach(f -> {
+                            var allTasks = ((Integer) f.getTasks().size()).longValue();
+                            var allCompletedTasks = f.getTasks().stream().filter(t -> t.getIsCompleted().equals(true)).count();
+                            var allUncompletedTasks = allTasks - allCompletedTasks;
+                            var folder = FolderPaginationDto.builder()
+                                    .id(f.getId().toString())
+                                    .title(f.getTitle())
+                                    .allTasks(allTasks)
+                                    .allCompletedTasks(allCompletedTasks)
+                                    .allUncompletedTasks(allUncompletedTasks)
+                                    .createdAt(f.getCreatedAt())
+                                    .build();
+                            folders.add(folder);
+                        });
+
+
+        PaginationBaseResponseDto res = PaginationBaseResponseDto.builder()
+                .data(folders)
+                .total(folderRepository.getAmountOfAllFolders(email))
+                .build();
+
+        return ResponseBaseDto.builder()
+                .statusCode(HttpStatus.OK.value())
+                .data(res)
+                .message("Folders gotten")
+                .build();
+    }
 
     public ResponseBaseDto getAllFoldersTitle(String token) {
         var folder = this.getAllFolders(token)
