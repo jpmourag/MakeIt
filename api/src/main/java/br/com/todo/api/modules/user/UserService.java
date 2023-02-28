@@ -80,4 +80,14 @@ public class UserService {
                 .message("User is authenticated")
                 .build();
     }
+
+    @Transactional
+    public ResponseBaseDto deleteUser(String token) {
+        var email = getEmailFromToken(token);
+        userRepository.deleteByEmail(email);
+        return ResponseBaseDto.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("User deleted")
+                .build();
+    }
 }
