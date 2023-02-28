@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:cc="http://xmlns.jcp.org/jsf/composite/components"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="WEB-INF/templates/Form.xhtml">
+
+    <ui:define name="title">
+        <p:outputLabel value="Fazer login"/>
+    </ui:define>
+
+    <ui:define name="form">
+        <div class="form">
+            #{pageManagerService.publicPageRedirectManager("home")}
+
+            <h:form>
+                <p:inputText class="loginInput" 
+                             placeholder="Email" 
+                             value="#{userService.email}"
+                             label="Email"
+                             />
+
+                <p:password class="loginInput" 
+                            placeholder="Senha" 
+                            value="#{userService.password}"
+                            label="Senha"/>
+
+                <div class="buttonGroup">
+                    <p:commandButton
+                        value="Entrar"
+                        class="button"
+                        process="@form"
+                        action="#{userService.login}"
+                        update="msgs"/>
+                    <p:link
+                        value="Criar uma conta"
+                        class="button"
+                        outcome="register"/>
+                </div>
+            </h:form>
+        </div>
+
+    </ui:define>
+</ui:composition>
+
