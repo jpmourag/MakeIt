@@ -27,6 +27,26 @@ public class FolderService {
     @Autowired
     private UserService userService;
 
+    public ResponseBaseDto updateFolder(UUID folderId, UpdateFolderDto folderNewData) throws FolderException {
+        var folder = folderRepository.findById(folderId).orElse(null);
+        if (folder != null) {
+            folder.setTitle(folderNewData.getTitle());
+            var updatedFolder = folderRepository.save(folder);
+            var filteredUpdatedFolder = FilteredFolderDataDto.builder()
+                    .id(updatedFolder.getId())
+                    .title(updatedFolder.getTitle())
+                    .userId(updatedFolder.getUser().getId())
+                    .userEmail(updatedFolder.getUser().getEmail())
+                    .createdAt(updatedFolder.getCreatedAt())
+                    .build();
+            return ResponseBaseDto.builder()
+                    .statusCode(HttpStatus.OK.value())
+                    .data(filteredUpdatedFolder)
+                    .message("Folder updated")
+                    .build();
+        }
+        throw new FolderException("Folder not found");
+    }
 
     public ResponseBaseDto deleteFolder(UUID folderId) {
         folderRepository.deleteById(folderId);
