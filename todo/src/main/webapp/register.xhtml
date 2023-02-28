@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:cc="http://xmlns.jcp.org/jsf/composite/components"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="WEB-INF/templates/Form.xhtml">
+
+    <ui:define name="title">
+        <p:outputLabel value="Criar uma conta"/>
+    </ui:define>
+
+    <ui:define name="form">
+        
+        #{pageManagerService.publicPageRedirectManager("home")}
+
+        <div class="form">
+            <h:form>
+                <p:inputText class="loginInput" 
+                             id="nome" 
+                             value="#{userService.name}" 
+                             placeholder="Nome" 
+                             label="Nome"/>
+
+                <p:inputText class="loginInput" 
+                             id="email" 
+                             value="#{userService.email}" 
+                             placeholder="Email" 
+                             label="Email"/>
+
+                <p:password class="loginInput" 
+                            id="senha" 
+                            value="#{userService.password}" 
+                            placeholder="Senha" 
+                            label="Senha"/>
+
+                <p:password class="loginInput" 
+                            id="confirmar_senha" 
+                            value="#{userService.confirmPassword}" 
+                            placeholder="Confirmar senha" 
+                            label="Confirmar senha"/>
+
+                <p:commandButton 
+                    value="Criar conta" 
+                    action="#{userService.register()}" 
+                    styleClass="button" 
+                    process="@form" 
+                    update="msgs"/>
+            </h:form>
+        </div>
+
+    </ui:define>
+</ui:composition>
+
