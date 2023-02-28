@@ -36,4 +36,26 @@ public class FolderService implements Serializable {
 
     private ServerFolderConnection serverFolderConnection = new ServerFolderConnection();
     private Gson gson = new Gson();
+
+    public List<Folder> getFolders(int offset, int pageSize) {
+        List<Folder> folders = new ArrayList<>();
+        var json = serverFolderConnection.folderPagination(offset, pageSize);
+
+        var folderPaginationResponseType
+                = new TypeToken<ResponseBaseDto<PaginationBaseDto<List<Folder>>>>() {
+                }.getType();
+
+        ResponseBaseDto<PaginationBaseDto<List<Folder>>> folderPaginationResponse
+                = gson.fromJson(json, folderPaginationResponseType);
+
+        if (folderPaginationResponse.getStatusCode() == 200) {
+            total = folderPaginationResponse.getData().getTotal();
+            return folderPaginationResponse.getData().getData()
+                    .stream().map(f -> {
+                        f.setCreatedAt(HandleDate.formartStringUTCDate(f.getCreatedAt()));
+                        return f;
+                    }).collect(Collectors.toList());
+        }
+        return folders;
+    }
 }
