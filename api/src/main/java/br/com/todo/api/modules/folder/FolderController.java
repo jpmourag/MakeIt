@@ -39,4 +39,39 @@ public class FolderController {
             throw new UnmappedErrorException(e);
         }
     }
+
+    @GetMapping("/private/get/{folderId}")
+    public ResponseEntity<ResponseBaseDto> getFolderById(
+            @RequestHeader("Authorization") String token,
+            @PathVariable @Valid UUID folderId
+    ) throws FolderException, UnmappedErrorException {
+        try {
+            return ResponseEntity.ok(folderService.getFolderByIdWithResponse(folderId, token));
+        } catch (CannotCreateTransactionException e) {
+            throw new FolderException("Error getting folder");
+        } catch (EntityException e){
+            throw new FolderException(e.getMessage());
+        } catch (Exception e) {
+            throw new UnmappedErrorException(e);
+        }
+    }
+
+    @PutMapping("/private/update/{folderId}")
+    public ResponseEntity<ResponseBaseDto> updateFolder(
+            @RequestHeader("Authorization") String token,
+            @PathVariable @Valid UUID folderId,
+            @RequestBody @Valid UpdateFolderDto folderNewData
+    ) throws FolderException, UnmappedErrorException {
+        try {
+            return ResponseEntity.ok(folderService.updateFolder(folderId, folderNewData));
+        } catch (EntityException e){
+            throw new FolderException(e.getMessage());
+        } catch (EmptyResultDataAccessException e) {
+            throw new FolderException("Folder not found");
+        } catch (CannotCreateTransactionException e) {
+            throw new FolderException("Error updating folder");
+        } catch (Exception e) {
+            throw new UnmappedErrorException(e);
+        }
+    }
 }
