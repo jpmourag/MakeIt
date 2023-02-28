@@ -14,4 +14,10 @@ import java.util.Locale;
  * @author jpmgo
  */
 public class HandleDate {
+
+    public static String formartStringUTCDate(String utcTime) {
+        ZonedDateTime zdt = ZonedDateTime.parse(utcTime);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+        return formatter.format(zdt.withZoneSameInstant(ZoneId.from(zdt).of("America/Sao_Paulo")));
+    }
 }
