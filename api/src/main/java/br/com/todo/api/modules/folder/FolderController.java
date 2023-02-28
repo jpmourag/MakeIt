@@ -106,4 +106,17 @@ public class FolderController {
             throw new UnmappedErrorException(e);
         }
     }
+
+    @GetMapping("/private/get/folders/name")
+    public ResponseEntity<ResponseBaseDto> getFolderByName(
+            @RequestHeader("Authorization") String token
+    ) throws FolderException, UnmappedErrorException {
+        try {
+            return ResponseEntity.ok(folderService.getAllFoldersTitle(token));
+        } catch (CannotCreateTransactionException e) {
+            throw new FolderException("Error getting folder by name");
+        } catch (Exception e) {
+            throw new UnmappedErrorException(e);
+        }
+    }
 }
