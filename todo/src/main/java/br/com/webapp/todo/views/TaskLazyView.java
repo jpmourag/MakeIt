@@ -16,12 +16,14 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import lombok.Data;
 import org.primefaces.model.LazyDataModel;
 
 /**
  *
  * @author jpmgo
  */
+@Data
 @Named("taskLV")
 @ApplicationScoped
 public class TaskLazyView implements Serializable {
