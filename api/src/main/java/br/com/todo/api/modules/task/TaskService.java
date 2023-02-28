@@ -35,6 +35,14 @@ public class TaskService {
     @Autowired
     private UserService userService;
 
+    public ResponseBaseDto deleteTask(UUID taskId) {
+        taskRepository.deleteById(taskId);
+        return ResponseBaseDto.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Task deleted")
+                .build();
+    }
+
     public ResponseBaseDto updateTask(UUID taskId, UpdateTaskDto taskToUpdate, String token) {
         var task = taskRepository.findById(taskId).orElse(null);
         if (task == null) {
