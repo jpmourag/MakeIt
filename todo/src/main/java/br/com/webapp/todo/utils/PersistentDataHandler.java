@@ -42,4 +42,8 @@ public class PersistentDataHandler {
         }
         return null;
     }
+
+    public void remove(String key) {
+        save(key, "0");
+    }
 }
