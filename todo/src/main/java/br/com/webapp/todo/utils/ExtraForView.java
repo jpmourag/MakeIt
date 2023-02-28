@@ -38,4 +38,11 @@ public class ExtraForView {
         String hex = Integer.toHexString(rgb);
         return "#" + hex;
     }
+    
+    public static void updateComponent(String id) {
+        FacesContext.getCurrentInstance()
+                .getPartialViewContext()
+                .getRenderIds()
+                .add(id);
+    }
 }
