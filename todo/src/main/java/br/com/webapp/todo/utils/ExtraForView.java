@@ -13,4 +13,19 @@ import javax.faces.context.FacesContext;
  * @author jpmgo
  */
 public class ExtraForView {
+
+    static public void triggerErrorMessage(String msg) {
+        var message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", msg);
+        FacesContext.getCurrentInstance().addMessage(null, message);
+    }
+
+    static public void triggerInfoMessage(String msg) {
+        var message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", msg);;
+        FacesContext.getCurrentInstance().addMessage(null, message);
+    }
+
+    static public void triggerWarnMessage(String msg) {
+        var message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Alerta", msg);
+        FacesContext.getCurrentInstance().addMessage(null, message);
+    }
 }
