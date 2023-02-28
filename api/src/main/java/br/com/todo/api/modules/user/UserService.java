@@ -62,4 +62,14 @@ public class UserService {
         }
         throw new UserException("Email or password incorrect");
     }
+
+    public ResponseBaseDto getUserData(String token) {
+        var email = getEmailFromToken(token);
+        var data = userRepository.getUserByEmail(email);
+        return ResponseBaseDto.builder()
+                .statusCode(HttpStatus.OK.value())
+                .data(data)
+                .message("User data")
+                .build();
+    }
 }
