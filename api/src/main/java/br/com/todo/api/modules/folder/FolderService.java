@@ -26,6 +26,13 @@ public class FolderService {
     private IFolderRepository folderRepository;
     @Autowired
     private UserService userService;
+
+
+    // Funções auxiliares abaixo sem response
+    public List<FilteredFolderDataDto> getAllFolders(String token) {
+        var email = userService.getEmailFromToken(token);
+        return folderRepository.findAllFoldersByEmail(email);
+    }
     
     public Folder getFolderById(UUID folderId, String token) {
         var email = userService.getEmailFromToken(token);
