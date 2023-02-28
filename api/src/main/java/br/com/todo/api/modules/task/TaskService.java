@@ -122,6 +122,31 @@ public class TaskService {
                 .message("Folder gotten")
                 .build();
     }
+
+    public ResponseBaseDto getAllTasksPagination(String token, int offset, int pageSize, String filter) {
+        var email = userService.getEmailFromToken(token);
+        var page = PageRequest.of(offset, pageSize);
+        PaginationBaseResponseDto res = switch (filter) {
+            case "all" -> PaginationBaseResponseDto.builder()
+                    .data(taskRepository.findAllTasks(email, page))
+                    .total(taskRepository.getAmountOfAllTasks(email))
+                    .build();
+            case "completed" -> PaginationBaseResponseDto.builder()
+                    .data(taskRepository.findAllTasksFilteredByIsCompleted(email, true, page))
+                    .total(taskRepository.getAmountOfTasksFilteredByIsCompleted(email, true)).build();
+            case "uncompleted" -> PaginationBaseResponseDto.builder()
+                    .data(taskRepository.findAllTasksFilteredByIsCompleted(email, false, page))
+                    .total(taskRepository.getAmountOfTasksFilteredByIsCompleted(email, false)).build();
+            default -> PaginationBaseResponseDto.builder().total(0).data(new ArrayList<>()).build();
+        };
+
+        return ResponseBaseDto.builder()
+                .statusCode(HttpStatus.OK.value())
+                .data(res)
+                .message("Folder gotten")
+                .build();
+    }
+
     public ResponseBaseDto deleteTask(UUID taskId) {
         taskRepository.deleteById(taskId);
         return ResponseBaseDto.builder()
