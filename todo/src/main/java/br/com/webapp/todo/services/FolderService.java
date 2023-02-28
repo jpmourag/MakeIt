@@ -101,4 +101,38 @@ public class FolderService implements Serializable {
         }
         ExtraForView.triggerErrorMessage("Não foi possível criar sua pasta.");
     }
+
+    public void updateFolder(String title, String folderId) {
+        if (title.isBlank()) {
+            ExtraForView.triggerWarnMessage("Preencha todos os campo corretamente");
+            return;
+        }
+        var body = new HashMap<String, Object>();
+        body.put("title", title);
+        var json = serverFolderConnection.updateFolder(body, folderId);
+        if (json == null) {
+            ExtraForView.triggerErrorMessage("Não foi possível atualizar sua pasta.");
+            return;
+        }
+        ResponseBaseDto response = gson.fromJson(json, ResponseBaseDto.class);
+        if (response.getStatusCode() == 200) {
+            ExtraForView.updateComponent("gridData_folders");
+            return;
+        }
+        ExtraForView.triggerErrorMessage("Não foi possível atualizar sua pasta.");
+    }
+
+    public void deleteFolder(String folderId) {
+        var json = serverFolderConnection.deleteFolder(folderId);
+        if (json == null) {
+            ExtraForView.triggerErrorMessage("Não foi possível remover sua pasta.");
+            return;
+        }
+        ResponseBaseDto response = gson.fromJson(json, ResponseBaseDto.class);
+        if (response.getStatusCode() == 200) {
+            ExtraForView.updateComponent("gridData_folders");
+            return;
+        }
+        ExtraForView.triggerErrorMessage("Não foi possível remover sua pasta.");
+    }
 }
