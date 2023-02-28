@@ -25,4 +25,20 @@ import java.util.UUID;
 public class TaskController {
     @Autowired
     private TaskService taskService;
+
+    @PostMapping("/private/create")
+    public ResponseEntity<ResponseBaseDto> create(
+            @RequestHeader("Authorization") String token,
+            @RequestBody @Valid CreateTaskDto task
+    ) throws TaskException, UnmappedErrorException {
+        try {
+            return ResponseEntity.ok(taskService.createTask(task, token));
+        } catch (EntityException e) {
+            throw new TaskException(e.getMessage());
+        } catch (CannotCreateTransactionException e) {
+            throw new TaskException("Error creating task");
+        } catch (Exception e) {
+            throw new UnmappedErrorException(e);
+        }
+    }
 }
