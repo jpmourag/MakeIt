@@ -25,4 +25,8 @@ public class ServerConnection {
     final protected String host = Env.get("TODO_SERVER_HOST", "127.0.0.1");
     final protected String port = Env.get("TODO_SERVER_PORT", "3333");
     final protected String linkConnection = "http://" + this.host + ":" + this.port + "/api/v1";
+
+    protected String getAuthToken() {
+        return "Bearer " + new PersistentDataHandler().read("token");
+    }
 }
