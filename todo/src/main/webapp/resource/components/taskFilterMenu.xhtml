@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <link rel="stylesheet" type="text/css" href="#{resource['styles/logo.css']}"/>
+    </h:head>
+
+    <cc:interface>
+    </cc:interface>
+
+    <cc:implementation>
+        <p:menubar rendered="#{taskService.currentFolder.id != 'none'}" >
+            <p:menuitem value="Todos" icon="pi pi-circle" actionListener="#{taskLV.redirect('all')}"/>
+            <p:menuitem class="completed_menu" value="Concluídas"
+                        icon="pi pi-fw pi-circle-fill" actionListener="#{taskLV.redirect('completed')}"/>
+            <p:menuitem class="uncompleted_menu" value="Não Concluídas" 
+                        icon="pi pi-fw pi-circle-fill" actionListener="#{taskLV.redirect('uncompleted')}"/>
+            <p:menuitem value="Adicionar atividade para essa pasta" 
+                        icon="pi pi-fw pi-plus" 
+                        onclick="PF('create_task_in_folder_page').show()"/>
+        </p:menubar>
+
+        <p:dialog header="Criar Tarefa"
+                  widgetVar="create_task_in_folder_page"
+                  minHeight="40"
+                  width="350"
+                  showEffect="fade"
+                  modal="true"
+                  responsive="true">
+            <h:form class="dialog-form" >
+                <p:growl id="create_task_in_folder_page_msg" showDetail="true"/>
+                <p:inputText placeholder="Nome da tarefa" value="#{taskService.title}" />
+                <p:inputTextarea placeholder="Descrição da tarefa" value="#{taskService.description}"/>
+                <p:commandButton value="Criar" 
+                                 actionListener="#{taskService.createTask(taskService.currentFolder.id)}"
+                                 update="create_task_in_folder_page_msg"
+                                 onclick="PF('create_task_in_folder_page').hide()"/>
+            </h:form>
+        </p:dialog>
+
+
+        <style>
+            a.ui-menuitem-link.ui-corner-all.uncompleted_menu
+            span.ui-menuitem-icon.ui-icon.pi.pi-fw.pi-circle-fill {
+                color: #c02929;
+            }
+            a.ui-menuitem-link.ui-corner-all.completed_menu
+            span.ui-menuitem-icon.ui-icon.pi.pi-fw.pi-circle-fill {
+                color: #619434;
+            }
+        </style>
+    </cc:implementation>
+</html>
+
