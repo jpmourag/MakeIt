@@ -35,4 +35,28 @@ public class WebComunication {
         }
 
     }
+
+    public static String getQueryString(Map<String, String> params) {
+        if (params == null || params.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            try {
+                String key = URLEncoder.encode(entry.getKey(), "UTF-8");
+                String value = URLEncoder.encode(entry.getValue(), "UTF-8");
+                sb.append(key).append("=").append(value).append("&");
+            } catch (UnsupportedEncodingException e) {
+                System.out.println(e);
+            }
+        }
+
+        if (sb.length() > 0) {
+            sb.deleteCharAt(sb.length() - 1);
+            return "?" + sb.toString();
+        }
+
+        return "";
+    }
 }
