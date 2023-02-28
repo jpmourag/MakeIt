@@ -44,4 +44,22 @@ public class UserService {
                 .message("User created")
                 .build();
     }
+
+    public ResponseBaseDto login(AuthRequestDto request) throws UserException {
+        var user = findByEmail(request.getEmail());
+        if (user != null) {
+            var isPasswordCorrect = passwordEncoder.matches(request.getPassword(), user.getPassword());
+            if (isPasswordCorrect) {
+                var jwtToken = jwtService.generateToken(user);
+                Map<String, String> data = new HashMap<>();
+                data.put("token", jwtToken);
+                return ResponseBaseDto.builder()
+                        .statusCode(HttpStatus.OK.value())
+                        .data(data)
+                        .message("User logged in")
+                        .build();
+            }
+        }
+        throw new UserException("Email or password incorrect");
+    }
 }
