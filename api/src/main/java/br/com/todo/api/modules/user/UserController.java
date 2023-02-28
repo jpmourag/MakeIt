@@ -43,4 +43,19 @@ public class UserController {
             throw new UnmappedErrorException(e);
         }
     }
+
+    @PostMapping("/public/login")
+    public ResponseEntity<ResponseBaseDto> login(
+            @RequestBody @Valid AuthRequestDto request
+    ) throws UserException, UnmappedErrorException {
+        try {
+            return ResponseEntity.ok(userService.login(request));
+        } catch (CannotCreateTransactionException e) {
+            throw new UserException("Error authenticating user");
+        } catch (EntityException e) {
+            throw new UserException(e.getMessage());
+        } catch (Exception e) {
+            throw new UnmappedErrorException(e);
+        }
+    }
 }
