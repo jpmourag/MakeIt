@@ -35,6 +35,24 @@ public class TaskService {
     @Autowired
     private UserService userService;
 
+    public ResponseBaseDto updateTask(UUID taskId, UpdateTaskDto taskToUpdate, String token) {
+        var task = taskRepository.findById(taskId).orElse(null);
+        if (task == null) {
+            return ResponseBaseDto.builder()
+                    .statusCode(HttpStatus.NOT_FOUND.value())
+                    .message("Task not found")
+                    .build();
+        }
+        task.setTitle(taskToUpdate.getTitle());
+        task.setDescription(taskToUpdate.getDescription());
+        task.setIsCompleted(taskToUpdate.getIsCompleted());
+        taskRepository.save(task);
+        return ResponseBaseDto.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Task updated")
+                .build();
+    }
+
     // Funções auxiliares abaixo sem response
     private Task getFilteredTaskById(UUID taskId, String token) {
         var email = userService.getEmailFromToken(token);
