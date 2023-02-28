@@ -106,4 +106,12 @@ public class UserController {
             throw new UnmappedErrorException(e);
         }
     }
+
+
+    @GetMapping("/private/is/authenticated")
+    public ResponseEntity<ResponseBaseDto> getAll(
+            @RequestHeader("Authorization") String token
+    )  {
+        return ResponseEntity.ok(userService.isAuthenticated(token));
+    }
 }
