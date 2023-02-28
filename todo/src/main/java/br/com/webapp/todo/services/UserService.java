@@ -109,4 +109,30 @@ public class UserService implements Serializable {
         }
         ExtraForView.triggerErrorMessage("Não foi possível criar conta");
     }
+
+    public void login() {
+        if (email.isBlank() || password.isBlank()) {
+            ExtraForView.triggerWarnMessage("Preencha todos os campos corretamente");
+            return;
+        }
+        var json = serverUserConnection.login(email, password);
+        if (json == null) {
+            ExtraForView.triggerErrorMessage("Não foi possível fazer login");
+            return;
+        }
+        var loginResponseType = new TypeToken<ResponseBaseDto<LoginResponseDto>>() {
+        }.getType();
+        ResponseBaseDto<LoginResponseDto> loginResponse = gson.fromJson(json, loginResponseType);
+        if (loginResponse.getStatusCode() == 200) {
+            persistentDataHandler.save("token", loginResponse.getData().getToken());
+            WebComunication.redirect("home");
+            return;
+        }
+        ExtraForView.triggerErrorMessage("Email ou senha errados");
+    }
+
+    public void logout() {
+        persistentDataHandler.remove("token");
+        WebComunication.redirect("index");
+    }
 }
