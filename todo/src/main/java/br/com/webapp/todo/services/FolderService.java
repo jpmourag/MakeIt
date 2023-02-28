@@ -135,4 +135,8 @@ public class FolderService implements Serializable {
         }
         ExtraForView.triggerErrorMessage("Não foi possível remover sua pasta.");
     }
+
+    public String generateRandomColor() {
+        return ExtraForView.generateRandomColor();
+    }
 }
