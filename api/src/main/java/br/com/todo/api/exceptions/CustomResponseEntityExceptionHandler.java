@@ -57,4 +57,38 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
         var message = ex.getMessage();
         return handleException(message);
     }
+
+    public static ResponseEntity<ResponseBaseDto> handleValidationExceptions(Exception ex)
+            throws UnmappedErrorException {
+        Map<String, String> errors = new HashMap<>();
+        var res = new ResponseBaseDto();
+        res.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        res.setMessage("Error");
+        res.setData(null);
+        if (ex instanceof MethodArgumentNotValidException) {
+            ((MethodArgumentNotValidException) ex).getBindingResult().getAllErrors().forEach((error) -> {
+                String fieldName = ((FieldError) error).getField();
+                String errorMessage = error.getDefaultMessage();
+                errors.put(fieldName, errorMessage);
+            });
+        }
+        if (ex instanceof MissingServletRequestParameterException) {
+            errors.put("error", ex.getLocalizedMessage());
+            res.setData(errors);
+            return ResponseEntity.badRequest().body(res);
+        }
+        if (ex instanceof MethodArgumentTypeMismatchException) {
+            errors.put("error", 
+            ((MethodArgumentTypeMismatchException) ex)
+            .getParameter()
+            .getParameterName() + " " + "Invalid parameter");
+
+            res.setData(errors);
+            return ResponseEntity.badRequest().body(res);
+        }
+        
+        log.error("Unmapped error", new UnmappedErrorException(ex));
+        res.setData(errors);
+        return ResponseEntity.badRequest().body(res);
+    }
 }
