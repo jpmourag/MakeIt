@@ -27,6 +27,24 @@ public class FolderService {
     @Autowired
     private UserService userService;
 
+    public ResponseBaseDto createFolder(CreateFolderDto folderToCreate, String token) {
+        var user = userService.getUserFromToken(token);
+        var folder = Folder.builder()
+                .title(folderToCreate.getTitle())
+                .user(user)
+                .build();
+        folderRepository.save(folder);
+        Map<String, String> data = new HashMap<>();
+        data.put("title", folder.getTitle());
+        data.put("folder_id", folder.getId().toString());
+        System.out.println("folderid: " + folder.getId());
+        return ResponseBaseDto
+                .builder()
+                .statusCode(HttpStatus.CREATED.value())
+                .data(data)
+                .message("Folder created")
+                .build();
+    }
 
     public ResponseBaseDto getFolderByIdWithResponse(UUID folderId, String token) throws FolderException {
         var folder = getFolderById(folderId, token);
