@@ -43,4 +43,11 @@ public class UserService implements Serializable {
     final private ServerUserConnection serverUserConnection = new ServerUserConnection();
 
     private String token = persistentDataHandler.read("token");
+
+    @PostConstruct
+    public void init() {
+        if (token != null && !token.equals("0")) {
+            getUserData();
+        }
+    }
 }
