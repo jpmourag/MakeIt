@@ -126,4 +126,21 @@ public class TaskController {
             throw new UnmappedErrorException(e);
         }
     }
+
+    @PutMapping("/private/update/{taskId}")
+    public ResponseEntity<ResponseBaseDto> updateTask(
+            @RequestHeader("Authorization") String token,
+            @PathVariable @Valid UUID taskId,
+            @RequestBody @Valid UpdateTaskDto task
+    ) throws TaskException, UnmappedErrorException {
+        try {
+            return ResponseEntity.ok(taskService.updateTask(taskId, task, token));
+        } catch (CannotCreateTransactionException e) {
+            throw new TaskException("Error updating task");
+        } catch (EmptyResultDataAccessException e) {
+            throw new TaskException("Task not found");
+        }  catch (Exception e) {
+            throw new UnmappedErrorException(e);
+        }
+    }
 }
