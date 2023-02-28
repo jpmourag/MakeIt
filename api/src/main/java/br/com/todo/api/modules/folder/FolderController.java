@@ -74,4 +74,20 @@ public class FolderController {
             throw new UnmappedErrorException(e);
         }
     }
+
+    @DeleteMapping("/private/delete/{folderId}")
+    public ResponseEntity<ResponseBaseDto> deleteFolder(
+            @RequestHeader("Authorization") String token,
+            @PathVariable @Valid UUID folderId
+    ) throws FolderException, UnmappedErrorException {
+        try {
+            return ResponseEntity.ok(folderService.deleteFolder(folderId));
+        } catch (CannotCreateTransactionException e) {
+            throw new FolderException("Error deleting folder");
+        }  catch (EmptyResultDataAccessException e) {
+            throw new FolderException("Folder not found");
+        }  catch (Exception e) {
+            throw new UnmappedErrorException(e);
+        }
+    }
 }
