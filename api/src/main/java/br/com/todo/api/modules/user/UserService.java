@@ -101,4 +101,10 @@ public class UserService {
                 .message("User updated")
                 .build();
     }
+
+    // Funções auxiliares abaixo sem response
+    public String getEmailFromToken(String token) {
+        var jwt = token.replace("Bearer ", "");
+        return jwtService.extractUsername(jwt);
+    }
 }
