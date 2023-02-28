@@ -35,6 +35,28 @@ public class TaskService {
     @Autowired
     private UserService userService;
 
+    public ResponseBaseDto createTask(CreateTaskDto taskToCreate, String token) throws FolderException {
+        var folder = folderService.getFolderById(UUID.fromString(taskToCreate.getFolderId()), token);
+        if (folder == null) throw new FolderException("Folder not found");
+        var task = Task.builder()
+                .title(taskToCreate.getTitle())
+                .description(taskToCreate.getDescription())
+                .folder(folder)
+                .isCompleted(false)
+                .build();
+        var savedTask = taskRepository.save(task);
+        Map<String, String> data = new HashMap<>();
+        data.put("id", savedTask.getId().toString());
+        data.put("title", savedTask.getTitle());
+        data.put("description", savedTask.getDescription());
+        data.put("folder_id", savedTask.getFolder().getId().toString());
+        data.put("folder_title", savedTask.getFolder().getTitle());
+        return ResponseBaseDto.builder()
+                .statusCode(HttpStatus.CREATED.value())
+                .data(data)
+                .message("Task created")
+                .build();
+    }
     public ResponseBaseDto deleteTask(UUID taskId) {
         taskRepository.deleteById(taskId);
         return ResponseBaseDto.builder()
