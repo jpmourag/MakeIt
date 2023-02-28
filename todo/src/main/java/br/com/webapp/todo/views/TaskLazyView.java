@@ -28,4 +28,26 @@ public class TaskLazyView implements Serializable {
 
     private LazyDataModel<Task> lazyModel;
 
+    @Inject
+    private TaskService taskService;
+
+    @PostConstruct
+    public void init() {
+        var folderId = WebComunication.getDataFromParams("folderId");
+        var filter = WebComunication.getDataFromParams("filter");
+        var search = WebComunication.getDataFromParams("search");
+        Map<String, String> params = new HashMap<>();
+        params.put("folderId", folderId);
+        params.put("filter", filter);
+        params.put("search", search);
+
+        if (filter != null || search != null) {
+            if (folderId != null && folderId.equals("none")) {
+                var folder = Folder.builder().id("none").title("Resultados").build();
+                taskService.setCurrentFolder(folder);
+            }
+            lazyModel = new LazyTaskDataModel(taskService.getTasks(0, 6, params),
+                    taskService.getTotal(), params);
+        }
+    }
 }
