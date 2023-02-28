@@ -91,4 +91,19 @@ public class UserController {
             throw new UnmappedErrorException(e);
         }
     }
+
+    @DeleteMapping("/private/delete")
+    public ResponseEntity<ResponseBaseDto> delete(
+            @RequestHeader("Authorization") String token
+    ) throws UserException, UnmappedErrorException {
+        try {
+            return ResponseEntity.ok(userService.deleteUser(token));
+        } catch (CannotCreateTransactionException e) {
+            throw new UserException("Error to delete user");
+        } catch (UsernameNotFoundException | EmptyResultDataAccessException e) {
+            throw new UserException("User not found");
+        } catch (Exception e) {
+            throw new UnmappedErrorException(e);
+        }
+    }
 }
