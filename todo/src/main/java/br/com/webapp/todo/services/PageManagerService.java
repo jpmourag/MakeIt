@@ -20,4 +20,21 @@ import lombok.Data;
 @Named
 @ApplicationScoped
 public class PageManagerService implements Serializable {
+    
+    private final ServerUserConnection serverConnection = new ServerUserConnection();
+
+    public void index(String authenticatedRedirectTo, String notAuthenticatedRedirectTo) {
+        var persistentDataHandler = new PersistentDataHandler();
+        String takenToken = persistentDataHandler.read("token");
+        if (takenToken != null) {
+            var isUserAuthenticated = serverConnection.isUserAuthenticated();
+            if (isUserAuthenticated) {
+                WebComunication.redirect(authenticatedRedirectTo);
+            } else {
+                WebComunication.redirect(notAuthenticatedRedirectTo);
+            }
+        } else {
+            WebComunication.redirect(notAuthenticatedRedirectTo);
+        }
+    }
 }
