@@ -97,4 +97,72 @@ public class TaskService implements Serializable {
         }
         return res;
     }
+
+    public void createTask() {
+        if (title.isBlank() || description.isBlank()) {
+            ExtraForView.triggerWarnMessage("Preencha todos os campos corretamente");
+            return;
+        }
+        if (folderIdToCreateTask.isBlank()) {
+            ExtraForView.triggerWarnMessage("Necessário selecionar uma pasta para criar uma tarefa");
+            return;
+        }
+
+        createTask(folderIdToCreateTask);
+    }
+
+    public void createTask(String folderId) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("title", title);
+        body.put("description", description);
+        body.put("folderId", folderId);
+        var json = serverTaskConnection.createTask(body);
+        if (json == null) {
+            ExtraForView.triggerErrorMessage("Não foi possível criar sua tarefa");
+            return;
+        }
+        var data = gson.fromJson(json, ResponseBaseDto.class);
+        if (data.getStatusCode() == 201) {
+            ExtraForView.updateComponent("gridData_folders");
+            ExtraForView.updateComponent("gridData_tasks");
+            return;
+        }
+        ExtraForView.triggerErrorMessage("Não foi possível criar sua tarefa");
+    }
+
+    public void updateTask(String id, String title, String description, Boolean isCompleted) {
+        if (title.isBlank() || description.isBlank()) {
+            ExtraForView.triggerWarnMessage("Preencha todos os campo corretamente");
+            return;
+        }
+        Map<String, Object> body = new HashMap<>();
+        body.put("title", title);
+        body.put("description", description);
+        body.put("isCompleted", isCompleted);
+        var json = serverTaskConnection.updateTask(body, id);
+        if (json == null) {
+            ExtraForView.triggerErrorMessage("Não foi possível atualizar sua tarefa");
+            return;
+        }
+        var res = gson.fromJson(json, ResponseBaseDto.class);
+        if (res.getStatusCode() == 200) {
+            ExtraForView.updateComponent("gridData_tasks");
+            return;
+        }
+        ExtraForView.triggerErrorMessage("Não foi possível atualizar sua tarefa");
+    }
+
+    public void deleteTask(String id) {
+        var json = serverTaskConnection.deleteTask(id);
+        if (json == null) {
+            ExtraForView.triggerErrorMessage("Não foi possível deletar sua tarefa");
+            return;
+        }
+        var res = gson.fromJson(json, ResponseBaseDto.class);
+        if (res.getStatusCode() == 200) {
+            ExtraForView.updateComponent("gridData_tasks");
+            return;
+        }
+        ExtraForView.triggerErrorMessage("Não foi possível deletar sua tarefa");
+    }
 }
