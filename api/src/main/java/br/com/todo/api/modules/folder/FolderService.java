@@ -28,6 +28,15 @@ public class FolderService {
     private UserService userService;
 
 
+    public ResponseBaseDto deleteFolder(UUID folderId) {
+        folderRepository.deleteById(folderId);
+        return ResponseBaseDto.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Folder deleted")
+                .build();
+    }
+
+
     // Funções auxiliares abaixo sem response
     public List<FilteredFolderDataDto> getAllFolders(String token) {
         var email = userService.getEmailFromToken(token);
