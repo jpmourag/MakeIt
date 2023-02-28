@@ -63,4 +63,13 @@ public class TaskLazyView implements Serializable {
         WebComunication.redirectWithParameters("tasks", params);
         lazyModel = new LazyTaskDataModel(taskService.getTasks(0, 6, params), taskService.getTotal(), params);
     }
+
+    public void redirectToFolderPageByFolderId(String folderId, String folderName) {
+//        var folder = folderService.getFolderById(folderId);
+        var folder = Folder.builder().id(folderId).title(folderName).build();
+        if (folder == null) {
+            return;
+        }
+        redirect(folder, "all", "");
+    }
 }
