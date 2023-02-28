@@ -72,4 +72,12 @@ public class UserService {
                 .message("User data")
                 .build();
     }
+
+    public ResponseBaseDto isAuthenticated(String token) {
+        return ResponseBaseDto.builder()
+                .statusCode(HttpStatus.OK.value())
+                .data(true)
+                .message("User is authenticated")
+                .build();
+    }
 }
