@@ -90,4 +90,20 @@ public class FolderController {
             throw new UnmappedErrorException(e);
         }
     }
+
+    @GetMapping("/private/pagination")
+    public ResponseEntity<ResponseBaseDto> getFoldersPagination(
+            @RequestHeader("Authorization") String token,
+            @RequestParam("offset") @Valid Integer offset,
+            @RequestParam("pageSize") @Valid Integer pageSize,
+            @RequestParam("filter") @Valid String filter
+    ) throws FolderException, UnmappedErrorException {
+        try {
+            return ResponseEntity.ok(folderService.getFoldersPagination(token, offset, pageSize));
+        } catch (CannotCreateTransactionException e) {
+            throw new FolderException("Error getting folders pagination");
+        } catch (Exception e) {
+            throw new UnmappedErrorException(e);
+        }
+    }
 }
