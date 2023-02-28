@@ -82,4 +82,19 @@ public class TaskService implements Serializable {
         }
         return tasks;
     }
+
+    private List<FolderName> getFoldersNames() {
+        List<FolderName> res = new ArrayList<>();
+        var json = new ServerFolderConnection().getFoldersNames();
+        if (json == null) {
+            return res;
+        }
+        var foldersNameResponseType = new TypeToken<ResponseBaseDto<List<FolderName>>>() {
+        }.getType();
+        ResponseBaseDto<List<FolderName>> foldersNameResponse = gson.fromJson(json, foldersNameResponseType);
+        if (foldersNameResponse.getStatusCode() == 200) {
+            res = foldersNameResponse.getData();
+        }
+        return res;
+    }
 }
