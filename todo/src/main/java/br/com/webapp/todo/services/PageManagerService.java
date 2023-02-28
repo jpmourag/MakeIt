@@ -50,4 +50,15 @@ public class PageManagerService implements Serializable {
             }
         }
     }
+
+    public void publicPageRedirectManager(String authenticatedRedirectTo) {
+        var persistentDataHandler = new PersistentDataHandler();
+        String takenToken = persistentDataHandler.read("token");
+        if (takenToken != null) {
+            var isUserAuthenticated = serverConnection.isUserAuthenticated();
+            if (isUserAuthenticated) {
+                WebComunication.redirect(authenticatedRedirectTo);
+            }
+        }
+    }
 }
