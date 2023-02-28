@@ -81,4 +81,24 @@ public class FolderService implements Serializable {
         ExtraForView.triggerErrorMessage("Um error ocorreu.");
         return null;
     }
+
+    public void createFolder() {
+        if (title.isBlank()) {
+            ExtraForView.triggerWarnMessage("Preencha todos os campo corretamente");
+            return;
+        }
+        var body = new HashMap<String, Object>();
+        body.put("title", title);
+        var json = serverFolderConnection.createFolder(body);
+        if (json == null) {
+            ExtraForView.triggerErrorMessage("Não foi possível criar sua pasta.");
+            return;
+        }
+        ResponseBaseDto response = gson.fromJson(json, ResponseBaseDto.class);
+        if (response.getStatusCode() == 201) {
+            WebComunication.redirect("home");
+            return;
+        }
+        ExtraForView.triggerErrorMessage("Não foi possível criar sua pasta.");
+    }
 }
