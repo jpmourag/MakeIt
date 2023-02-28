@@ -57,6 +57,32 @@ public class TaskService {
                 .message("Task created")
                 .build();
     }
+
+    public ResponseBaseDto getTaskByIdResponse(UUID taskId, String token) {
+        var task = getFilteredTaskById(taskId, token);
+        if (task == null) {
+            return ResponseBaseDto.builder()
+                    .statusCode(HttpStatus.NOT_FOUND.value())
+                    .message("Task not found")
+                    .build();
+        }
+
+        var handledTask = TaskPaginationDto.builder()
+                .id(task.getId())
+                .title(task.getTitle())
+                .description(task.getDescription())
+                .isCompleted(task.getIsCompleted())
+                .folderId(task.getFolder().getId())
+                .folderName(task.getFolder().getTitle())
+                .createdAt(task.getCreatedAt())
+                .build();
+
+        return ResponseBaseDto.builder()
+                .statusCode(HttpStatus.OK.value())
+                .data(handledTask)
+                .message("Task found")
+                .build();
+    }
     public ResponseBaseDto deleteTask(UUID taskId) {
         taskRepository.deleteById(taskId);
         return ResponseBaseDto.builder()
