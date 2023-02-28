@@ -28,4 +28,19 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @PostMapping("/public/create")
+    public ResponseEntity<ResponseBaseDto> create(
+            @RequestBody @Valid CreateUserDto user
+    ) throws UserException, UnmappedErrorException {
+        try {
+            return ResponseEntity.ok(userService.createUser(user));
+        } catch (DataIntegrityViolationException e) {
+            throw new UserException("User already exists");
+        } catch (CannotCreateTransactionException e) {
+            throw new UserException("Error creating user");
+        } catch (Exception e) {
+            throw new UnmappedErrorException(e);
+        }
+    }
 }
