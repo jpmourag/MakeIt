@@ -110,4 +110,20 @@ public class TaskController {
             throw new UnmappedErrorException(e);
         }
     }
+
+    @DeleteMapping("/private/delete/{taskId}")
+    public ResponseEntity<ResponseBaseDto> deleteTask(
+            @RequestHeader("Authorization") String token,
+            @PathVariable @Valid UUID taskId
+    ) throws TaskException, UnmappedErrorException {
+        try {
+            return ResponseEntity.ok(taskService.deleteTask(taskId));
+        } catch (CannotCreateTransactionException e) {
+            throw new TaskException("Error deleting task");
+        } catch (EmptyResultDataAccessException e) {
+            throw new TaskException("Task not found");
+        } catch (Exception e) {
+            throw new UnmappedErrorException(e);
+        }
+    }
 }
