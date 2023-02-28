@@ -25,4 +25,18 @@ import java.util.UUID;
 public class FolderController {
     @Autowired
     private FolderService folderService;
+
+    @PostMapping("/private/create")
+    public ResponseEntity<ResponseBaseDto> create(
+            @RequestHeader("Authorization") String token,
+            @RequestBody @Valid CreateFolderDto folder
+    ) throws FolderException, UnmappedErrorException {
+        try {
+            return ResponseEntity.ok(folderService.createFolder(folder, token));
+        } catch (CannotCreateTransactionException e) {
+            throw new FolderException("Error creating folder");
+        } catch (Exception e) {
+            throw new UnmappedErrorException(e);
+        }
+    }
 }
