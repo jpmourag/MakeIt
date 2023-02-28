@@ -28,4 +28,18 @@ public class PersistentDataHandler {
         cookie.setPath(ec.getRequestContextPath());
         response.addCookie(cookie);
     }
+
+    public String read(String key) {
+        FacesContext fc = FacesContext.getCurrentInstance();
+        ExternalContext ec = fc.getExternalContext();
+
+        Map<String, Object> cookies = ec.getRequestCookieMap();
+        Cookie cookie = (Cookie) cookies.get(key);
+
+        if (cookie != null) {
+            String valor = (String) cookie.getValue();
+            return valor;
+        }
+        return null;
+    }
 }
