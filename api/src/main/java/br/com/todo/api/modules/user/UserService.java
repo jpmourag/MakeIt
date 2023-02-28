@@ -107,4 +107,9 @@ public class UserService {
         var jwt = token.replace("Bearer ", "");
         return jwtService.extractUsername(jwt);
     }
+
+    public User getUserFromToken(String token) {
+        var email = getEmailFromToken(token);
+        return findByEmail(email);
+    }
 }
