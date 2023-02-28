@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <composite:interface>
+    </composite:interface>
+
+    <composite:implementation>
+
+        <p:menubar id="main_menu">
+            <p:submenu label="Nova" icon="pi pi-fw pi-plus">
+                <p:menuitem value="Pasta" icon="pi pi-fw pi-folder" onclick="PF('create_folder').show()"/>
+                <p:menuitem value="Tarefa" icon="pi pi-fw pi-file"
+                            async="true"
+                            onclick="PF('create_task').show()"
+                            id="main_menu_create_task"/>
+            </p:submenu>
+
+            <p:submenu label="Minha conta" icon="pi pi-fw pi-user">
+                <p:menuitem value="Minhas pastas" icon="pi pi-fw pi-folder" outcome="home"/>
+                <p:submenu label="Tarefas" icon="pi pi-fw pi-list">
+                    <p:menuitem value="Concluidas" 
+                                icon="pi pi-fw pi-check-circle" 
+                                actionListener="#{taskLV.redirectAllTasks('completed')}"/>
+                    <p:menuitem value="Não concluidas" 
+                                icon="pi pi-fw pi-times-circle" 
+                                actionListener="#{taskLV.redirectAllTasks('uncompleted')}"/>
+                    <p:menuitem value="Todas" 
+                                icon="pi pi-fw pi-circle"
+                                actionListener="#{taskLV.redirectAllTasks('all')}"/>
+                </p:submenu>
+                <p:menuitem value="Editar" icon="pi pi-fw pi-pencil" onclick="PF('edit_account').show()"/>
+                <p:menuitem value="Apagar conta" 
+                            style="font-weight: bolder" 
+                            icon="pi pi-fw pi-trash" 
+                            onclick="PF('delete_account').show()"/>
+            </p:submenu>
+
+            <p:divider layout="vertical"/>
+
+            <p:menuitem value="Sair" icon="pi pi-fw pi-power-off" actionListener="#{userService.logout()}"/>
+
+            <f:facet name="options">
+                <h:form class="search-container">
+                    <p:inputText placeholder="Pesquisar tarefa" value="${taskService.searchedWord}"/>
+                    <p:commandButton value="Buscar" 
+                                     icon="pi pi-fw pi-search" 
+                                     styleClass="ui-button-info"
+                                     actionListener="#{taskLV.redirectSearchPage(taskService.searchedWord)}">
+                    </p:commandButton>
+                </h:form>
+
+            </f:facet>
+        </p:menubar>
+
+        <!--dialogs-->
+        <p:dialog header="Criar Pasta" 
+                  widgetVar="create_folder"
+                  minHeight="40"
+                  width="350"
+                  showEffect="fade"
+                  modal="true">
+            <h:form class="dialog-form">
+                <p:growl id="create_folder_msg" showDetail="true"/>
+                <p:inputText placeholder="Nome da pasta" value="#{folderService.title}"/>
+                <p:commandButton value="Criar"
+                                 actionListener="#{folderService.createFolder()}"
+                                 onclick="PF('create_folder').hide()"
+                                 update="create_folder_msg"/>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Criar Tarefa"
+                  widgetVar="create_task"
+                  minHeight="40"
+                  width="350"
+                  showEffect="fade"
+                  modal="true"
+                  responsive="true">
+            <h:form class="dialog-form" id="create_task_dialog_form">
+                <p:growl id="create_task_msg" showDetail="true"/>
+                <p:inputText placeholder="Nome da tarefa" value="#{taskService.title}" />
+                <p:inputTextarea placeholder="Descrição da tarefa" value="#{taskService.description}"/>
+
+                <p:selectOneMenu  id="create_task_select" 
+                                  value="#{taskService.folderIdToCreateTask}">
+                    <f:selectItem itemLabel="Selecione uma pasta"  itemValue="" />
+                    <f:selectItems value="#{taskService.foldersToSelect}"
+                                   var="folder"
+                                   itemLabel="#{folder.title}"
+                                   itemValue="#{folder.id}"/>
+
+                </p:selectOneMenu>
+                <p:tooltip for="create_task_select" 
+                           value="Necessário ter pasta para criar tarefa" 
+                           position="right"/>
+
+                <p:commandButton value="Criar" 
+                                 actionListener="#{taskService.createTask()}"
+                                 update="create_task_msg"
+                                 onclick="PF('create_task').hide()"/>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Editar Conta" 
+                  widgetVar="edit_account"
+                  minHeight="40"
+                  width="350"
+                  showEffect="fade"
+                  modal="true">
+            <h:form class="dialog-form">
+                <p:growl id="messages_edit_account" showDetail="true"/>
+                <p:inputText placeholder="Novo nome" value="#{userService.name}" />
+                <p:commandButton value="Salvar" 
+                                 onclick="PF('edit_account').hide()"
+                                 actionListener="#{userService.updateUser()}"
+                                 update="messages_edit_account"/>
+            </h:form>
+        </p:dialog>
+
+        <p:confirmDialog header="Excluir Conta" 
+                         message="Deseja excluir sua conta?" 
+                         showEffect="fade" 
+                         responsive="true" 
+                         width="350"
+                         widgetVar="delete_account">
+            <p:commandButton value="Não"
+                             type="button"
+                             styleClass="ui-confirmdialog-no ui-button-flat"
+                             onclick="PF('delete_account').hide()"/>
+            <p:commandButton value="Sim"
+                             actionListener="#{userService.deleteUser()}" 
+                             styleClass="ui-confirmdialog-yes"
+                             oncomplete="PF('delete_account').hide()">
+            </p:commandButton>
+        </p:confirmDialog>
+    </composite:implementation>
+</html>
