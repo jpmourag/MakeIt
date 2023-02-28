@@ -34,4 +34,10 @@ public class TaskService {
     private FolderService folderService;
     @Autowired
     private UserService userService;
+
+    // Funções auxiliares abaixo sem response
+    private Task getFilteredTaskById(UUID taskId, String token) {
+        var email = userService.getEmailFromToken(token);
+        return taskRepository.findByIdFiltered(taskId, email);
+    }
 }
