@@ -96,6 +96,32 @@ public class TaskService {
                 .build();
     }
 
+    public ResponseBaseDto getTasksPaginationByFolderId(
+            UUID folderId, String token, int offset, int pageSize, String filter) {
+        var email = userService.getEmailFromToken(token);
+        var page = PageRequest.of(offset, pageSize);
+        PaginationBaseResponseDto res = switch (filter) {
+            case "all" -> PaginationBaseResponseDto.builder()
+                    .data(taskRepository.findAllTasksByFolderId(folderId, email, page))
+                    .total(taskRepository.getAmountOfTasksByFolderId(folderId, email))
+                    .build();
+            case "completed" -> PaginationBaseResponseDto.builder()
+                    .data(taskRepository.findAllTasksByFolderIdFilteredByIsCompleted(folderId, email, true, page))
+                    .total(taskRepository.getAmountOfTasksByFolderIdFilteredByIsCompleted(folderId, email, true))
+                    .build();
+            case "uncompleted" -> PaginationBaseResponseDto.builder()
+                    .data(taskRepository.findAllTasksByFolderIdFilteredByIsCompleted(folderId, email, false, page))
+                    .total(taskRepository.getAmountOfTasksByFolderIdFilteredByIsCompleted(folderId, email, false))
+                    .build();
+            default -> PaginationBaseResponseDto.builder().build();
+        };
+
+        return ResponseBaseDto.builder()
+                .statusCode(HttpStatus.OK.value())
+                .data(res)
+                .message("Folder gotten")
+                .build();
+    }
     public ResponseBaseDto deleteTask(UUID taskId) {
         taskRepository.deleteById(taskId);
         return ResponseBaseDto.builder()
