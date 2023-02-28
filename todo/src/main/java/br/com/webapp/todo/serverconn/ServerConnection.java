@@ -24,6 +24,7 @@ public class ServerConnection {
     final protected Gson gson = new Gson();
     final protected String host = Env.get("TODO_SERVER_HOST", "127.0.0.1");
     final protected String port = Env.get("TODO_SERVER_PORT", "3333");
+
     final protected String linkConnection = "http://" + this.host + ":" + this.port + "/api/v1";
 
     protected String getAuthToken() {
@@ -88,6 +89,26 @@ public class ServerConnection {
                     .build();
             
             var json = responseToJson(httpclient, httpDelete);
+            return json;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    public String pagination(int offset, int pageSize, String filter, String path) {
+        offset = offset / pageSize;
+        try {
+            var httpclient = HttpClients.createDefault();
+            var httpGet = ClassicRequestBuilder
+                    .get(linkConnection + path)
+                    .addHeader("Content-Type", "application/json")
+                    .addHeader("Authorization", getAuthToken())
+                    .addParameter("offset", offset + "")
+                    .addParameter("pageSize", pageSize + "")
+                    .addParameter("filter", filter)
+                    .build();
+            
+            var json = responseToJson(httpclient, httpGet);
             return json;
         } catch (Exception e) {
             return null;
