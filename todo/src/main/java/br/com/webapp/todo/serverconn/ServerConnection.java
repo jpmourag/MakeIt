@@ -41,4 +41,56 @@ public class ServerConnection {
             return null;
         }
     }
+
+    protected String post(Map<String, Object> body, String path) {
+        var bodyJson = gson.toJson(body);
+        try {
+            var httpclient = HttpClients.createDefault();
+            var httpPost = ClassicRequestBuilder
+                    .post(linkConnection + path)
+                    .addHeader("Content-Type", "application/json")
+                    .addHeader("Authorization", getAuthToken())
+                    .setEntity(bodyJson)
+                    .build();
+            
+            var json = responseToJson(httpclient, httpPost);
+            return json;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    protected String put(Map<String, Object> body, String path) {
+        var bodyJson = gson.toJson(body);
+        try {
+            var httpclient = HttpClients.createDefault();
+            var httpPut = ClassicRequestBuilder
+                    .put(linkConnection + path)
+                    .addHeader("Content-Type", "application/json")
+                    .addHeader("Authorization", getAuthToken())
+                    .setEntity(bodyJson)
+                    .build();
+            
+            var json = responseToJson(httpclient, httpPut);
+            return json;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    protected String delete(String path) {
+        try {
+            var httpclient = HttpClients.createDefault();
+            var httpDelete = ClassicRequestBuilder
+                    .delete(linkConnection + path)
+                    .addHeader("Content-Type", "application/json")
+                    .addHeader("Authorization", getAuthToken())
+                    .build();
+            
+            var json = responseToJson(httpclient, httpDelete);
+            return json;
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }
