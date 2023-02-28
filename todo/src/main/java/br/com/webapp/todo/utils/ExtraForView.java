@@ -28,4 +28,14 @@ public class ExtraForView {
         var message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Alerta", msg);
         FacesContext.getCurrentInstance().addMessage(null, message);
     }
+
+    static public String generateRandomColor() {
+        Random random = new Random();
+        int red = random.nextInt(256);
+        int green = random.nextInt(256);
+        int blue = random.nextInt(256);
+        int rgb = (red << 16) | (green << 8) | blue;
+        String hex = Integer.toHexString(rgb);
+        return "#" + hex;
+    }
 }
