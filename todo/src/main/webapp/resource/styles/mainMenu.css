@@ -1,0 +1,30 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this template
+*/
+/* 
+    Created on : 28 de fev. de 2023, 14:29:09
+    Author     : jpmgo
+*/
+
+.search-container {
+    display: flex;
+    gap: 6px;
+    padding-left: 10px;
+}
+body .ui-menu.ui-menubar {
+    background: #ffffff;
+    margin-bottom: 10px;
+}
+body .ui-selectonemenu-panel .ui-selectonemenu-items .ui-selectonemenu-item {
+    width: 100%;
+}
+body .ui-selectonemenu-panel {
+    width: 300px !important;
+}
+div#j_idt11\:main_menu ul.ui-menu-list.ui-helper-reset {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+}
