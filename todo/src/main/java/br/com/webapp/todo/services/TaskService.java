@@ -169,4 +169,21 @@ public class TaskService implements Serializable {
         }
         ExtraForView.triggerErrorMessage("Não foi possível deletar sua tarefa");
     }
+
+    public List<Task> searchTasks(int offset, int pageSize, String search) {
+        if (!search.isBlank()) {
+            var json = serverTaskConnection.search(offset, pageSize, search);
+            var tasksListResponseType = new TypeToken<ResponseBaseDto<PaginationBaseDto<List<Task>>>>() {
+            }.getType();
+
+            ResponseBaseDto<PaginationBaseDto<List<Task>>> tasksListResponse = gson.fromJson(json, tasksListResponseType);
+            if (tasksListResponse.getStatusCode() == 200) {
+                foundSearchData = tasksListResponse.getData().getData();
+                total = tasksListResponse.getData().getTotal();
+                return foundSearchData;
+            }
+            ExtraForView.triggerErrorMessage("Não foi possível realizar a pesquisa");
+        }
+        return new ArrayList<>();
+    }
 }
