@@ -73,4 +73,23 @@ public class TaskController {
             throw new UnmappedErrorException(e);
         }
     }
+
+    @GetMapping("/private/pagination/{folderId}")
+    public ResponseEntity<ResponseBaseDto> getTasksByFolderId(
+            @RequestHeader("Authorization") String token,
+            @PathVariable @Valid UUID folderId,
+            @RequestParam("offset") @Valid Integer offset,
+            @RequestParam("pageSize") @Valid Integer pageSize,
+            @RequestParam("filter") @Valid String filter
+    ) throws TaskException, UnmappedErrorException {
+        try {
+            return ResponseEntity.ok(taskService.getTasksPaginationByFolderId(folderId, token, offset, pageSize, filter));
+        } catch (CannotCreateTransactionException e) {
+            throw new TaskException("Error getting tasks");
+        } catch (EmptyResultDataAccessException e) {
+            throw new TaskException("Task not found");
+        }  catch (Exception e) {
+            throw new UnmappedErrorException(e);
+        }
+    }
 }
