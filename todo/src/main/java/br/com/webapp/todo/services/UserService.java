@@ -50,4 +50,20 @@ public class UserService implements Serializable {
             getUserData();
         }
     }
+
+    private Boolean isValidRegister() {
+        if (name.isBlank() || email.isBlank() || password.isBlank()) {
+            ExtraForView.triggerWarnMessage("Preencha todos os dados corretamente");
+            return false;
+        }
+        if (!password.equals(confirmPassword)) {
+            ExtraForView.triggerWarnMessage("Senhas incompatíveis.");
+            return false;
+        }
+        if (!isValidEmail(email)) {
+            ExtraForView.triggerWarnMessage("Digite um email válido");
+            return false;
+        }
+        return true;
+    }
 }
