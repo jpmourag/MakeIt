@@ -58,4 +58,21 @@ public class UserController {
             throw new UnmappedErrorException(e);
         }
     }
+
+    @GetMapping("/private/get/data")
+    public ResponseEntity<ResponseBaseDto> data(
+            @RequestHeader("Authorization") String token
+    ) throws UserException, UnmappedErrorException {
+        try {
+            return ResponseEntity.ok(userService.getUserData(token));
+        } catch (UsernameNotFoundException e) {
+            throw new UserException("User not found");
+        } catch (InvalidDataAccessResourceUsageException e) {
+            throw new UserException("Error to get user data");
+        } catch (CannotCreateTransactionException e) {
+            throw new UserException("Internal error, can not get user data");
+        } catch (Exception e) {
+            throw new UnmappedErrorException(e);
+        }
+    }
 }
