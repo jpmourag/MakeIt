@@ -25,4 +25,23 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private JwtService jwtService;
+
+    public ResponseBaseDto createUser(CreateUserDto userToCreate) {
+        var user = User.builder()
+                .name(userToCreate.getName())
+                .email(userToCreate.getEmail())
+                .password(passwordEncoder.encode(userToCreate.getPassword()))
+                .build();
+
+        userRepository.save(user);
+
+        var jwtToken = jwtService.generateToken(user);
+        Map<String, String> data = new HashMap<>();
+        data.put("token", jwtToken);
+        return ResponseBaseDto.builder()
+                .statusCode(HttpStatus.CREATED.value())
+                .data(data)
+                .message("User created")
+                .build();
+    }
 }
