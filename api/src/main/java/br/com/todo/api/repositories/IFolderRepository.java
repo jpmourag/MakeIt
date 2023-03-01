@@ -15,4 +15,9 @@ public interface IFolderRepository extends JpaRepository<Folder, UUID> {
 
     @Query("SELECT f FROM FOLDER f WHERE f.user.email = :email ORDER BY f.createdAt DESC")
     List<Folder> findAllByUserEmail(String email, AbstractPageRequest pageable);
+
+    @Query("SELECT new br.com.todo.api.modules.folder.dto." +
+            "FilteredFolderDataDto(f.id, f.title, f.user.id, f.user.email, f.createdAt) " +
+            "FROM FOLDER f WHERE f.user.email = :email ORDER BY f.createdAt DESC")
+    List<FilteredFolderDataDto> findAllFoldersByEmail(String email);
 }
