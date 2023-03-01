@@ -56,4 +56,13 @@ public interface ITaskRepository extends JpaRepository<Task, UUID> {
             "(LOWER(t.title) LIKE LOWER(CONCAT('%', :key, '%')) OR " +
             "LOWER(t.description) LIKE LOWER(CONCAT('%', :key, '%')))")
     List<TaskPaginationDto> findByKeyword(String key, String email, AbstractPageRequest pageable);
+
+    @Query("SELECT new br.com.todo.api.modules.task.dto." +
+            "TaskPaginationDto(t.id, t.title, t.description, t.isCompleted, " +
+            "f.title, f.id, t.createdAt) " +
+            "FROM TASK t " +
+            "JOIN t.folder f " +
+            "WHERE f.user.email = :email AND " +
+            "f.id = :folderId ORDER BY t.createdAt DESC")
+    List<TaskPaginationDto> findAllTasksByFolderId(UUID folderId, String email, AbstractPageRequest pageable);
 }
