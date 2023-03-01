@@ -11,4 +11,8 @@ import java.util.UUID;
 
 public interface IUserRepository extends JpaRepository<User, UUID> {
     Optional<User> findByEmail(String email);
+    
+    @Modifying
+    @Query("DELETE FROM USER_TABLE u WHERE u.email = :email")
+    void deleteByEmail(String email);
 }
