@@ -20,4 +20,8 @@ public interface IUserRepository extends JpaRepository<User, UUID> {
             "FilteredUserDataDto(u.id, u.name, u.email) " +
             "FROM USER_TABLE u WHERE u.email = :email")
     FilteredUserDataDto getUserByEmail(String email);
+
+    @Modifying
+    @Query("UPDATE USER_TABLE u SET u.name = :name WHERE u.email = :email")
+    void saveUserByEmail(String email, String name);
 }
