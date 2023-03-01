@@ -46,4 +46,14 @@ public interface ITaskRepository extends JpaRepository<Task, UUID> {
             "f.id = :folderId AND " +
             "t.isCompleted = :isCompleted")
     Integer getAmountOfTasksByFolderIdFilteredByIsCompleted(UUID folderId, String email, Boolean isCompleted);
+
+
+    // pagination
+    @Query("SELECT new br.com.todo.api.modules.task.dto." +
+            "TaskPaginationDto(t.id, t.title, t.description, t.isCompleted, " +
+            "t.folder.title, t.folder.id, t.createdAt) FROM TASK t " +
+            "WHERE t.folder.user.email = :email AND " +
+            "(LOWER(t.title) LIKE LOWER(CONCAT('%', :key, '%')) OR " +
+            "LOWER(t.description) LIKE LOWER(CONCAT('%', :key, '%')))")
+    List<TaskPaginationDto> findByKeyword(String key, String email, AbstractPageRequest pageable);
 }
