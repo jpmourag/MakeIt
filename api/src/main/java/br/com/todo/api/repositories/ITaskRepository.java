@@ -14,4 +14,12 @@ public interface ITaskRepository extends JpaRepository<Task, UUID> {
             "WHERE f.user.email = :email AND " +
             "t.id = :id")
     Task findByIdAndUserEmail(UUID id, String email);
+    
+
+    // amout of tasks
+    @Query("SELECT COUNT(*) FROM TASK t " +
+            "WHERE t.folder.user.email = :email AND " +
+            "(LOWER(t.title) LIKE LOWER(CONCAT('%', :key, '%')) OR " +
+            "LOWER(t.description) LIKE LOWER(CONCAT('%', :key, '%')))")
+    Integer getAmountByKeyword(String key, String email);
 }
