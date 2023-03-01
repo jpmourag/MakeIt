@@ -9,4 +9,9 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.UUID;
 public interface ITaskRepository extends JpaRepository<Task, UUID> {
+    @Query("SELECT t FROM TASK t " +
+            "JOIN t.folder f " +
+            "WHERE f.user.email = :email AND " +
+            "t.id = :id")
+    Task findByIdAndUserEmail(UUID id, String email);
 }
