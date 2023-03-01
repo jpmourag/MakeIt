@@ -27,4 +27,10 @@ public interface ITaskRepository extends JpaRepository<Task, UUID> {
             "JOIN t.folder f " +
             "WHERE f.user.email = :email")
     Integer getAmountOfAllTasks(String email);
+
+    @Query("SELECT COUNT(*) FROM TASK t " +
+            "JOIN t.folder f " +
+            "WHERE f.user.email = :email AND " +
+            "t.isCompleted = :isCompleted")
+    Integer getAmountOfTasksFilteredByIsCompleted(String email, Boolean isCompleted);
 }
