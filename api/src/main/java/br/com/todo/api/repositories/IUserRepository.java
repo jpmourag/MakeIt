@@ -15,4 +15,9 @@ public interface IUserRepository extends JpaRepository<User, UUID> {
     @Modifying
     @Query("DELETE FROM USER_TABLE u WHERE u.email = :email")
     void deleteByEmail(String email);
+
+    @Query("SELECT new br.com.todo.api.modules.user.dto." +
+            "FilteredUserDataDto(u.id, u.name, u.email) " +
+            "FROM USER_TABLE u WHERE u.email = :email")
+    FilteredUserDataDto getUserByEmail(String email);
 }
