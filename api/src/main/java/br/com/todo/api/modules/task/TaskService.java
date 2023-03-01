@@ -176,6 +176,6 @@ public class TaskService {
     // Funções auxiliares abaixo sem response
     private Task getFilteredTaskById(UUID taskId, String token) {
         var email = userService.getEmailFromToken(token);
-        return taskRepository.findByIdFiltered(taskId, email);
+        return taskRepository.findByIdAndUserEmail(taskId, email);
     }
 }
