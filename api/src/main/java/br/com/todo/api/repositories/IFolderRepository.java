@@ -20,4 +20,8 @@ public interface IFolderRepository extends JpaRepository<Folder, UUID> {
             "FilteredFolderDataDto(f.id, f.title, f.user.id, f.user.email, f.createdAt) " +
             "FROM FOLDER f WHERE f.user.email = :email ORDER BY f.createdAt DESC")
     List<FilteredFolderDataDto> findAllFoldersByEmail(String email);
+
+    @Query("SELECT f FROM FOLDER f " +
+            "WHERE f.id = :id AND f.user.email = :email")
+    Folder findFolderByIdAndUserEmail(UUID id, String email);
 }
