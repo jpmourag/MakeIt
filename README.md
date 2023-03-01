@@ -10,6 +10,10 @@ Para o server do frontend foi utilizado [Apache Tomcat 8.5](https://tomcat.apach
 O backend foi feito com SpringBoot então utiliza o próprio Spring
 > O back e o front utilizaram **Lombok** então ele precisa estar ativo
 
+> a pasta **todo** é o projeto frontend
+
+> a pasta **api** é o projeto backend
+
 </br>
 
 # Execução
