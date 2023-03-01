@@ -85,4 +85,15 @@ public interface ITaskRepository extends JpaRepository<Task, UUID> {
             "JOIN t.folder f " +
             "WHERE f.user.email = :email ORDER BY t.createdAt DESC")
     List<TaskPaginationDto> findAllTasks(String email, AbstractPageRequest pageable);
+
+    @Query("SELECT new br.com.todo.api.modules.task.dto." +
+            "TaskPaginationDto(t.id, t.title, t.description, t.isCompleted, " +
+            "f.title, f.id, t.createdAt) " +
+            "FROM TASK t " +
+            "JOIN t.folder f " +
+            "WHERE f.user.email = :email AND " +
+            "t.isCompleted = :isCompleted ORDER BY t.createdAt DESC")
+    List<TaskPaginationDto> findAllTasksFilteredByIsCompleted(String email,
+                                                              Boolean isCompleted,
+                                                              AbstractPageRequest pageable);
 }
