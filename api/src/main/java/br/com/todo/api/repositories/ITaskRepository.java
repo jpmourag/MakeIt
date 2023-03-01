@@ -22,4 +22,9 @@ public interface ITaskRepository extends JpaRepository<Task, UUID> {
             "(LOWER(t.title) LIKE LOWER(CONCAT('%', :key, '%')) OR " +
             "LOWER(t.description) LIKE LOWER(CONCAT('%', :key, '%')))")
     Integer getAmountByKeyword(String key, String email);
+
+    @Query("SELECT COUNT(*) FROM TASK t " +
+            "JOIN t.folder f " +
+            "WHERE f.user.email = :email")
+    Integer getAmountOfAllTasks(String email);
 }
